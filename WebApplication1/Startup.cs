@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GreenPipes;
+using System;
 using MassTransit;
 using MessageContracts;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +17,11 @@ namespace WebApplication1
 
             services.AddMassTransit(x =>
             {
-                x.UsingRabbitMq((context, cfg) => cfg.Host("localhost"));
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.UseMessageRetry(c => c.Interval(5, 1));
+                    cfg.Host("localhost");
+                });
 
                 var timeout = TimeSpan.FromSeconds(10);
                 var serviceAddress = new Uri("rabbitmq://localhost/order-service");

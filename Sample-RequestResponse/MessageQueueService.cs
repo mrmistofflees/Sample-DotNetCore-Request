@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GreenPipes;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
@@ -19,9 +20,11 @@ namespace Sample_RequestResponse
 
                 cfg.ReceiveEndpoint("order-service", e =>
                 {
+                    //cfg.UseMessageRetry(c => c.Interval(5, 1));
                     e.Handler<SubmitOrder>(context =>
                     {
                         Console.WriteLine("Order: {0}", context.Message.OrderId);
+                        throw new Exception("error");
 
                         return context.RespondAsync<OrderAccepted>(new
                         {
